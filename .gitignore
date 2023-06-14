@@ -1,7 +1,7 @@
 # Ignore Token & other private const
 constants.py
 
-data/
+data/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
