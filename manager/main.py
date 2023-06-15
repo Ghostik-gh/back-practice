@@ -52,7 +52,16 @@ def upload_file(file: UploadFile):
 def download_file(file_id: str):
     minio_cl = s3_minio()
     url = minio_cl.get_url_to_file(file_id=file_id)
-    return {'status' : 200,"url": url}
+    return {'status' : 200, "url": url}
+
+@app.get("/remove/{file_id}")
+def remove_file(file_id: str):
+    try:
+        minio_cl = s3_minio()
+        url = minio_cl.remove_file(file_id=file_id)
+        return {'status' : 200,"url": url}
+    except Exception as err:
+        return{'status': 500, 'error': err}
 
 """
 uvicorn main:app --reload

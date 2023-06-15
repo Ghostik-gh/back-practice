@@ -11,7 +11,6 @@ class s3_minio():
         access_key="adminadminadmin",
         secret_key="rootrootroot",
         secure=False,
-
     )
 
     def create_bucket(self):
@@ -40,5 +39,11 @@ class s3_minio():
                 bucket_name=first_bucket, object_name=file_id
             )
             return url 
+        except S3Error as exc:
+            print("error occurred.", exc)
+
+    def remove_file(self, file_id: str):
+        try: 
+            self.client.remove_object(bucket_name=first_bucket, object_name=file_id,)
         except S3Error as exc:
             print("error occurred.", exc)
