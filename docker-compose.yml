@@ -1,6 +1,19 @@
 version: '3.7'
 
 services:
+
+  db:
+    image: postgres
+    container_name: practice_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: admin
+      POSTGRES_DB: db01
+      POSTGRES_INITDB_ARGS: "-A md5"
+    ports:
+      - "5432:5432"
+
   minio:
     image: minio/minio:latest
     container_name: minio
