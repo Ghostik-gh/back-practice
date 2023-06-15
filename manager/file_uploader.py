@@ -1,10 +1,18 @@
+import random
 from minio import Minio
 from minio.error import S3Error
 
 
-def main():
-    # Create a client with the MinIO server playground, its access key
-    # and secret key.
+class s3_minio():
+
+    # def __init__(self) -> None:
+    #     client = Minio(
+    #     "127.0.0.1:9000",
+    #     access_key="adminadminadmin",
+    #     secret_key="rootrootroot",
+    #     secure=False
+    # )
+
     client = Minio(
         "127.0.0.1:9000",
         access_key="adminadminadmin",
@@ -12,28 +20,77 @@ def main():
         secure=False
     )
 
+    def create_bucket(self):
+        if self.client.bucket_exists("bucket01"):
+            print("Bucket 'bucket01' already exists")
+        else:
+            self.client.make_bucket("bucket01")
+            print("Bucket 'bucket01' created")
 
-    # Make 'my-bucket' bucket if not exist.
-    client.make_bucket("my-bucket")
-    # found = client.bucket_exists("my-bucket")
-    # if not found:
-    #     client.make_bucket("my-bucket")
-    # else:
-    #     print("Bucket 'my-bucket' already exists")
-    print("Bucket 'my-bucket' created")
+    def upload_file(self, file_id : str):
+        self.create_bucket()
+        self.client.fput_object(
+            bucket_name="bucket01", object_name=file_id, file_path="C:\\Users\\Фёдор\\OneDrive\\Документы\\MTUCI\\back-practice\\docker-compose.yml", 
+        )
 
-    # Upload '/home/user/Photos/asiaphotos.zip' as object name
-    # 'asiaphotos-2015.zip' to bucket 'asiatrip'.
-    client.fput_object(
-        bucket_name="my-bucket", object_name= "test.txt", file_path="C:\\Users\\Фёдор\\OneDrive\\Документы\\MTUCI\\back-practice\\Readme.md",
-    )
+    def get_url_to_file(self, file_id : str):
+        self.create_bucket()
+        url = self.client.presigned_get_object(
+            bucket_name="bucket01", object_name=file_id
+        )
+        print(url)
+        return url
 
 
-# if __name__ == "__main__":
 try:
-    main()
+    file_id = str(random.randint(0, 1000))+'.txt'
+    s3_minio().upload_file(file_id=file_id)
+    s3_minio().get_url_to_file(file_id=file_id)
 except S3Error as exc:
     print("error occurred.", exc)
+
+
+# def main():
+#     # Create a client with the MinIO server playground, its access key
+#     # and secret key.
+#     client = Minio(
+#         "127.0.0.1:9000",
+#         access_key="adminadminadmin",
+#         secret_key="rootrootroot",
+#         secure=False
+#     )
+
+
+#     # Make 'bucket01' bucket if not exist.
+#     # client.make_bucket("bucket01")
+#     found = client.bucket_exists("bucket01")
+#     if not found:
+#         client.make_bucket("bucket01")
+#         print("Bucket 'bucket01' created")
+#     else:
+#         print("Bucket 'bucket01' already exists")
+
+#     file_id = str(random.randint(0, 1000))+'.txt'
+
+#     client.fput_object(
+#         bucket_name="bucket01", object_name=file_id, file_path="C:\\Users\\Фёдор\\OneDrive\\Документы\\MTUCI\\back-practice\\docker-compose.yml", 
+#     )
+
+#     result = client.stat_object(
+#         bucket_name="bucket01", object_name=file_id
+#     )
+
+#     print(
+#     "last-modified: {0}, size: {1}".format(
+#         result.last_modified, result.size,
+#     ),)
+
+#     url = client.presigned_get_object(
+#         bucket_name="bucket01", object_name=file_id
+#     )
+
+#     print(url)
+
 
 # import boto3
 
@@ -47,6 +104,6 @@ except S3Error as exc:
 
 # # загрузка файла в бакет
 # filename = 'file.txt'
-# bucket_name = 'my-bucket'
+# bucket_name = 'bucket01'
 # with open(filename, 'rb') as f:
 #     s3.upload_fileobj(f, bucket_name, filename)

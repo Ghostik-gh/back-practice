@@ -3,6 +3,9 @@ from fastapi import FastAPI, UploadFile
 
 app = FastAPI()
 
+
+# TODO FastAPI-users[sqlalchemy] для авторизации
+
 """
 Проверка состояния 
 по айди файла ?
