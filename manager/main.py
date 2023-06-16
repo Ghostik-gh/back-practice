@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile
 import os
 from s3_minio import s3_minio
 import uuid
-
+import postgre 
 
 app = FastAPI()
 
@@ -14,8 +14,20 @@ app = FastAPI()
 """
 @app.get("/check/{file_id}")
 def check_state(file_id: str):
-    return {'status': 200, 'response': f"Вы можете получить свои данные http://127.0.0.1:8000/download/{file_id}"}
-    return {'status': 425, 'response': "Идет обработка"}
+    status = postgre.get_status(file_id)
+    match status:
+        case 0:
+            return {'status': 425, 'response': "Файл успешно загружен"}
+        case 1:
+            return {'status': 425, 'response': "Вы находитесь в очереди"}
+        case 2:
+            return {'status': 425, 'response': "Идет обработка"}
+        case 3:
+            return {'status': 200, 'response': f"Вы можете получить свои данные http://127.0.0.1:8000/download/{file_id}"}
+        case 4:
+            return {'status': 404, 'response': "Файл уже удален"}
+        case _:
+            return {'status': 500, 'response': "Неверное состояние файла"}
 
 """
 Отправка файла в MinIO
@@ -37,6 +49,7 @@ def upload_file(file: UploadFile):
     try: 
         minio_cl = s3_minio()
         minio_cl.upload_file(file_id=file_id, file_path=abs_path)
+        postgre.add_file(file_id, file.filename, file.filename, '.abc')
         return {'status': 200, 'id' : file_id}
     except Exception as err:
         return{'status': 500, 'error': err}
@@ -45,15 +58,19 @@ def upload_file(file: UploadFile):
 
 """
 Скачивание файла 
-через S3 minio ? или раздача через апи 
-просто передавать ссылку ? 
 """
 @app.get("/download/{file_id}")
 def download_file(file_id: str):
+    # status = postgre.get_status(file_id)
+    # if status == 3:
     minio_cl = s3_minio()
     url = minio_cl.get_url_to_file(file_id=file_id)
+    remove_file(file_id=file_id) # удаление файла ?
     return {'status' : 200, "url": url}
 
+"""
+Удаление файла из хранилища
+"""
 @app.get("/remove/{file_id}")
 def remove_file(file_id: str):
     try:
