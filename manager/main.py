@@ -8,11 +8,11 @@ app = FastAPI()
 
 # TODO FastAPI-users[sqlalchemy] для авторизации
 
-# TODO Pydantic (BaseModel)
+# YEP: Pydantic (BaseModel)
 # YEP: boto3 вместо minio 
 # TODO raise http error
-# TODO secret keys
-# 
+# YEP: secret keys
+# TODO testing 
 
 """
 Проверка состояния по uuid файла
@@ -47,10 +47,13 @@ def upload_file(file: UploadFile, end_ext: str):
     file_id = str(uuid.uuid4())
 
     try: 
+        postgre.add_file(uuid=file_id, filename=file.filename, start_ext=file.filename.split('.')[-1], end_ext=end_ext)
         s3 = s3_minio()
         s3.upload_file(file=file.file, file_id=file_id)
-        print("upload")
-        postgre.add_file(uuid=file_id, filename=file.filename, start_ext=file.filename.split('.')[-1], end_ext=end_ext)
+
+        # Rabbit here
+
+        postgre.change_status(uuid=file_id, state=1)
         return {'status': 200, 'id' : file_id, 'response': f"http://127.0.0.1:8000/download/{file_id}"}
     except Exception as err:
         return{'status': 500, 'error': err}

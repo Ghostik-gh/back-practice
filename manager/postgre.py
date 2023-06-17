@@ -1,4 +1,4 @@
-import random
+from config import settings
 from sqlalchemy import Table, MetaData, Column, Integer, String, create_engine
 
 meta = MetaData()
@@ -20,7 +20,7 @@ test = Table('test', meta,
     Column('state', Integer, default=0),
 )
 
-engine = create_engine("postgresql+psycopg2://admin:root@localhost/db01", echo=True)
+engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.HOST}/db01", echo=True)
 
 meta.create_all(engine)
 
@@ -36,7 +36,12 @@ def get_status(uuid:str) -> int:
         res = conn.execute(test.select().where(test.c.uuid == uuid))
         return res.fetchone()[-1]
 
+def change_status(uuid:str, state:int):
+    with engine.connect() as conn:
+        conn.execute(test.update().where(test.c.uuid == uuid).values(state=state))
+        conn.commit()
 
 
+change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
 # add_file("file_id", str(random.randint(0, 1000)), '.start', '.abc')
 # check_state_db('file_id')
