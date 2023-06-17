@@ -15,8 +15,8 @@ test = Table('test', meta,
     Column('id', Integer, primary_key=True),
     Column('uuid', String(36), nullable=False),
     Column('filename', String(250), nullable=False),
-    Column('start_ext', String(10), nullable=False),
-    Column('end_ext', String(10), nullable=False),
+    Column('start_ext', String(30), nullable=False),
+    Column('end_ext', String(30), nullable=False),
     Column('state', Integer, default=0),
 )
 
