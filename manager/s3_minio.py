@@ -6,7 +6,7 @@ first_bucket='bucket01'
 upload_bucket='upbuck'
 download_bucket='downbuck'
 
-class s3_minio():
+class S3minio():
 
     def __init__(self) -> None:
 
