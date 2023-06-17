@@ -1,8 +1,9 @@
 from fastapi import FastAPI, UploadFile
 import uvicorn
-from s3_minio import s3_minio
+from s3_minio import S3minio
 import uuid
 import postgre 
+import rabbit
 
 app = FastAPI()
 
@@ -12,6 +13,7 @@ app = FastAPI()
 # YEP: boto3 вместо minio 
 # TODO raise http error
 # YEP: secret keys
+# TODO разные конфиги для сервисов
 # TODO testing 
 
 """
@@ -48,10 +50,10 @@ def upload_file(file: UploadFile, end_ext: str):
 
     try: 
         postgre.add_file(uuid=file_id, filename=file.filename, start_ext=file.filename.split('.')[-1], end_ext=end_ext)
-        s3 = s3_minio()
+        s3 = S3minio()
         s3.upload_file(file=file.file, file_id=file_id)
 
-        # Rabbit here
+        rabbit.send_msg(text=file_id)
 
         postgre.change_status(uuid=file_id, state=1)
         return {'status': 200, 'id' : file_id, 'response': f"http://127.0.0.1:8000/download/{file_id}"}
@@ -65,7 +67,7 @@ def upload_file(file: UploadFile, end_ext: str):
 def download_file(file_id: str):
     # status = postgre.get_status(file_id)
     # if status == 3:
-    minio_cl = s3_minio()
+    minio_cl = S3minio()
     url = minio_cl.get_url_to_file(file_id=file_id)
     return {'status' : 200, "url": url}
 
@@ -76,7 +78,7 @@ def download_file(file_id: str):
 @app.get("/remove/{file_id}")
 def remove_file(file_id: str):
     try:
-        minio_cl = s3_minio()
+        minio_cl = S3minio()
         minio_cl.remove_file(file_id=file_id, bucket='upbuck')
         minio_cl.remove_file(file_id=file_id, bucket='downbuck')
         return {'status' : 200,"response" : "Файл удален"}
