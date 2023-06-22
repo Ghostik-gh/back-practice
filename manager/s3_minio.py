@@ -42,13 +42,14 @@ class S3minio():
             print("[ERROR]:", exc)
         
 
-    def get_url_to_file(self, file_id : str) -> str:
+    def get_url_to_file(self, file_id : str, filename : str) -> str:
         try: 
             url = self.client.generate_presigned_url(
                 'get_object',
                 Params={
-                    'Bucket': first_bucket,
-                    'Key': file_id
+                    'Bucket': download_bucket,
+                    'Key': file_id,
+                    'ResponseContentDisposition': f'attachment;filename={filename}'
                 },
                 )
             return url 
