@@ -1,4 +1,4 @@
-from rabbit import channel
+from converting import channel
 
 
 if __name__=="__main__":
