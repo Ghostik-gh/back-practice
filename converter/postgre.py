@@ -41,7 +41,11 @@ def change_status(uuid:str, state:int):
         conn.execute(test.update().where(test.c.uuid == uuid).values(state=state))
         conn.commit()
 
+def get_exts(uuid:str) -> int:
+    with engine.connect() as conn:
+        res = conn.execute(test.select().where(test.c.uuid == uuid))
+        return res.fetchone()[-3:-1]
 
-change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
+# change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
 # add_file("file_id", str(random.randint(0, 1000)), '.start', '.abc')
 # check_state_db('file_id')

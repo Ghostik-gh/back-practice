@@ -44,21 +44,7 @@ class S3minio():
     
     def get_file(self, file_id : str):
         file = self.client.get_object(Bucket=upload_bucket, Key=file_id)
-        return file
-
-
-    def get_url_to_file(self, file_id : str) -> str:
-        try: 
-            url = self.client.generate_presigned_url(
-                'get_object',
-                Params={
-                    'Bucket': first_bucket,
-                    'Key': file_id
-                },
-                )
-            return url 
-        except Exception as exc:
-            print("[ERROR]:", exc)
+        return file.get('Body')
 
 
     def remove_file(self, file_id: str, bucket:str):
