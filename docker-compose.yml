@@ -36,4 +36,22 @@ services:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 536870912
     ports:
       - ${PORT_RABBITMQ}:${PORT_RABBITMQ}
-      - 15672:15672
+
+  manager:
+    build: manager/
+    command: python main.py
+    
+    ports:
+      - 80:80
+    environment:
+      - DB_USER=admin
+      - DB_PASSWORD=root
+      - MINIO_ROOT_USER=adminadminadmin
+      - MINIO_ROOT_PASSWORD=rootrootroot
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=root
+      - HOST=127.0.0.1
+      - PORT_DB=5432
+      - PORT_MINIO=9000
+      - PORT_APP=8000
+      - PORT_RABBITMQ=5672
