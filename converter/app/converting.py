@@ -38,13 +38,14 @@ def callback(ch, method, properties, body):
         output_data = io.BytesIO(p.communicate(input=input_data.read())[0])
         output_data.seek(0)
         cl.upload_file(file=output_data, file_id=file_id)
+        change_status(file_id, 3)
         print("Upload succesfully")
 
-    except Exception as err:
+    except ffmpeg.Error as err:
         print("converting error", err)
+        change_status(file_id, 4)
     finally:
-        # cl.remove_file(file_id=file_id, bucket="upbuck")
-        change_status(file_id, 3)
+        cl.remove_file(file_id=file_id, bucket="upbuck")
 
 
 # Подписываемся на очередь и ждем сообщений
