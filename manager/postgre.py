@@ -21,7 +21,6 @@ test = Table('test', meta,
 )
 
 engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.HOST}/db01", echo=True)
-
 meta.create_all(engine)
 
 # try except ?
@@ -42,6 +41,15 @@ def change_status(uuid:str, state:int):
         conn.commit()
 
 
-change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
+def get_filename(uuid:str) -> int:
+    with engine.connect() as conn:
+        res = conn.execute(test.select().where(test.c.uuid == uuid))
+        result = res.fetchone()[2:]
+        filename = f'{result[0]}.{result[2]}'
+        return filename
+
+
+
+# change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
 # add_file("file_id", str(random.randint(0, 1000)), '.start', '.abc')
 # check_state_db('file_id')
