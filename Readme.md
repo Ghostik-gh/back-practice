@@ -11,3 +11,5 @@ SQLite | PostgreSQL | Mongo
 docker-compose
 fffmpeg
 ```
+
+### https://ffmpeg.org/download.html
