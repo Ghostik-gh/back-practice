@@ -8,4 +8,13 @@ RUN pip install --no-cache-dir --upgrade -r /converter/requirements.txt
 
 COPY ./app /converter
 
-CMD ["python" "./app/main.py"]
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    libopencv-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# COPY ./ffmpeg.exe /
+
+# CMD ["python" "/converter/main.py"]

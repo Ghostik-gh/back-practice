@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   db:
-    image: postgres
+    image: postgres:15.3
     container_name: postgres
     restart: always
     environment:
@@ -17,7 +17,7 @@ services:
     image: minio/minio:latest
     container_name: minio
     volumes:
-      - ./data:/data
+      - myapp:/data
     ports:
       - ${PORT_MINIO}:${PORT_MINIO}
     environment:
@@ -39,19 +39,50 @@ services:
 
   manager:
     build: manager/
+    container_name: manager
     command: python main.py
-    
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+      - rabbitmq
+      - minio
     ports:
-      - 80:80
+      - 8000:8000
     environment:
-      - DB_USER=admin
-      - DB_PASSWORD=root
-      - MINIO_ROOT_USER=adminadminadmin
-      - MINIO_ROOT_PASSWORD=rootrootroot
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=root
-      - HOST=127.0.0.1
-      - PORT_DB=5432
-      - PORT_MINIO=9000
-      - PORT_APP=8000
-      - PORT_RABBITMQ=5672
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - HOST=${HOST}
+      - PORT_DB=${PORT_DB}
+      - PORT_MINIO=${PORT_MINIO}
+      - PORT_APP=${PORT_APP}
+      - PORT_RABBITMQ=${PORT_RABBITMQ}
+
+
+  converter:
+    build: converter/
+    container_name: converter
+    command: python main.py
+    depends_on:
+      - db
+      - rabbitmq
+      - minio
+      - manager
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - HOST=${HOST}
+      - PORT_DB=${PORT_DB}
+      - PORT_MINIO=${PORT_MINIO}
+      - PORT_APP=${PORT_APP}
+      - PORT_RABBITMQ=${PORT_RABBITMQ}
+
+volumes:
+  myapp:
