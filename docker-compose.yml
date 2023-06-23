@@ -10,16 +10,16 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: db01
       POSTGRES_INITDB_ARGS: "-A md5"
-    ports:
-      - ${PORT_DB}:${PORT_DB}
+    # ports:
+    #   - ${PORT_DB}:${PORT_DB}
 
   minio:
     image: minio/minio:latest
     container_name: minio
     volumes:
       - myapp:/data
-    ports:
-      - ${PORT_MINIO}:${PORT_MINIO}
+    # ports:
+    #   - ${PORT_MINIO}:${PORT_MINIO}
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
@@ -47,14 +47,15 @@ services:
       - rabbitmq
       - minio
     ports:
-      - 8000:8000
+      - ${PORT_APP}:${PORT_APP}
     environment:
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - DSN_POSTGRE=${DSN_POSTGRE}
+      - ENDPOINT_MINIO=${ENDPOINT_MINIO}
+      - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
       - PORT_DB=${PORT_DB}
       - PORT_MINIO=${PORT_MINIO}
@@ -72,12 +73,13 @@ services:
       - minio
       - manager
     environment:
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - DSN_POSTGRE=${DSN_POSTGRE}
+      - ENDPOINT_MINIO=${ENDPOINT_MINIO}
+      - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
       - PORT_DB=${PORT_DB}
       - PORT_MINIO=${PORT_MINIO}
