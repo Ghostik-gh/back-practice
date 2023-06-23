@@ -5,8 +5,8 @@ from config import settings
 def que_init():
     credentials = pika.PlainCredentials(settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS)
 
-    parameters = pika.ConnectionParameters(host='rabbitmq',
-                                        #    host=settings.HOST,
+    parameters = pika.ConnectionParameters(
+                                        host=settings.HOST_RABBITMQ,
                                         port=settings.PORT_RABBITMQ,
                                         virtual_host='/',
                                         credentials=credentials)
@@ -23,7 +23,7 @@ def send_msg(text : str):
                         routing_key='hello',
                         body=text)
 
-    print(f" [x] Sent {text}")
+    print(f"[x] Sent {text}")
 
     channel.close()
 

@@ -7,8 +7,7 @@ upload_bucket='upbuck'
 download_bucket='downbuck'
 
 s3_resource = boto3.resource('s3',
-        endpoint_url=f'http://minio:{settings.PORT_MINIO}',
-        # endpoint_url=f'http://{settings.HOST}:{settings.PORT_MINIO}',
+        endpoint_url=f'{settings.ENDPOINT_MINIO}',
         aws_access_key_id=settings.MINIO_ROOT_USER,
         aws_secret_access_key=settings.MINIO_ROOT_PASSWORD)
 
@@ -40,7 +39,6 @@ def upload_file( file, file_id : str):
         print("[ERROR]:", exc)
     finally:
         client.close()
-        print('MINIO CONNECTION CLOSED')
     
 
 def get_url_to_file( file_id : str, filename : str) -> str:
@@ -59,7 +57,6 @@ def get_url_to_file( file_id : str, filename : str) -> str:
         print("[ERROR]:", exc)
     finally:
         client.close()
-        print('MINIO CONNECTION CLOSED')
 
 
 def remove_file( file_id: str, bucket:str):
@@ -70,5 +67,4 @@ def remove_file( file_id: str, bucket:str):
         print("[ERROR]:", exc)
     finally:
         client.close()
-        print('MINIO CONNECTION CLOSED')
 

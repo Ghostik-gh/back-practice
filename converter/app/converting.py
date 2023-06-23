@@ -10,7 +10,7 @@ from s3_minio import get_file, remove_file, upload_file
 
 credentials = pika.PlainCredentials(settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS)
 
-parameters = pika.ConnectionParameters(host='rabbitmq',
+parameters = pika.ConnectionParameters(host=settings.HOST_RABBITMQ,
                                        port=settings.PORT_RABBITMQ,
                                        virtual_host='/',
                                        credentials=credentials)
@@ -24,17 +24,11 @@ channel.queue_declare(queue='hello')
 def callback(ch, method, properties, body):
     file_id = body.decode('utf-8')
     print("Received %r" % file_id)
-    print('========================\nclient')
     exts = get_exts(file_id)
     print(exts)
     change_status(file_id, 2)
-    print('change status')
     try:
-        print('========================')
-        print('client')
-        print('client S3 CREATED')
         input_data = get_file(file_id=file_id)
-        print('get FILE')
         args = (ffmpeg
             .input('pipe:', format=exts[0])
             .output('pipe:', format=exts[1])

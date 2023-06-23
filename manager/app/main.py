@@ -8,12 +8,10 @@ import rabbit
 app = FastAPI()
 
 # TODO FastAPI-users[sqlalchemy] для авторизации
-
 # YEP: Pydantic (BaseModel)
 # YEP: boto3 вместо minio 
-# TODO raise http error
 # YEP: secret keys
-# TODO разные конфиги для сервисов
+# Nope разные конфиги для сервисов
 # TODO testing 
 
 """
@@ -40,6 +38,7 @@ def check_state(file_id: str):
         print("[ERROR]: main.py", err)
         return {'status': 500, 'response': "Неверное состояние файла"}
 
+
 """
 Отправка файла в MinIO
 добавление состояния в таблицу
@@ -58,6 +57,7 @@ def upload_file_api(file: UploadFile, end_ext: str):
     except Exception as err:
         return{'status': 500, 'error': err}
 
+
 """
 Скачивание файла 
 """
@@ -68,7 +68,6 @@ def download_file(file_id: str):
         return {'status': 200, 'id' : file_id, 'response':'Пока не готово', 'url': f"http://127.0.0.1:8000/check/{file_id}"}
     elif status == 3:
         filename = get_filename(file_id)
-        print(filename)
         url = get_url_to_file(file_id=file_id, filename=filename)
         if "minio" in url:
             url = url.replace("minio", "127.0.0.1")
@@ -77,6 +76,7 @@ def download_file(file_id: str):
         return {'status': 200, 'response': "Такого файла нет или он уже удален"}
     else:
         return {'status': 500, 'response':'Ошибка сервера, попробуйте заново загрузить'}
+
 
 """
 Удаление файла из хранилища
@@ -93,10 +93,6 @@ def remove_file(file_id: str):
         return{'status': 500, 'error': err}
 
 
-
-@app.get("/")
-def hello_msg():
-    return "Hello"
 """
 cd manager
 uvicorn main:app --reload

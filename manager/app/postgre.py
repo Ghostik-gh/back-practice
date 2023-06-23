@@ -20,23 +20,23 @@ test = Table('test', meta,
     Column('state', Integer, default=0),
 )
 
-# engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@127.0.0.1:{settings.PORT_DB}/db01", echo=True)
-dsn=f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@db:{settings.PORT_DB}/db01"
+dsn=settings.DSN_POSTGRE
 print(dsn)
 engine = create_engine(dsn, echo=True)
 meta.create_all(engine)
 
-# try except ?
 def add_file(uuid:str, filename:str, start_ext:str, end_ext:str):
     with engine.connect() as conn:
         insert_row = test.insert().values(uuid=uuid, filename=filename, start_ext=start_ext, end_ext=end_ext, state=0)
         conn.execute(insert_row)
         conn.commit()
 
+
 def get_status(uuid:str) -> int:
     with engine.connect() as conn:
         res = conn.execute(test.select().where(test.c.uuid == uuid))
         return res.fetchone()[-1]
+
 
 def change_status(uuid:str, state:int):
     with engine.connect() as conn:
@@ -50,9 +50,3 @@ def get_filename(uuid:str) -> int:
         result = res.fetchone()[2:]
         filename = f'{result[0]}.{result[2]}'
         return filename
-
-
-
-# change_status("2f3ff4a6-c1fd-41c4-af6d-e911ca9dddb8", 3)
-# add_file("file_id", str(random.randint(0, 1000)), '.start', '.abc')
-# check_state_db('file_id')
