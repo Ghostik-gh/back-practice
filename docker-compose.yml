@@ -34,14 +34,14 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 536870912
-    ports:
-      - ${PORT_RABBITMQ}:${PORT_RABBITMQ}
+    # ports:
+    #   - ${PORT_RABBITMQ}:${PORT_RABBITMQ}
 
   manager:
     build: manager/
     container_name: manager
     command: python main.py
-    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
     depends_on:
       - db
       - rabbitmq
@@ -57,8 +57,6 @@ services:
       - ENDPOINT_MINIO=${ENDPOINT_MINIO}
       - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
-      - PORT_DB=${PORT_DB}
-      - PORT_MINIO=${PORT_MINIO}
       - PORT_APP=${PORT_APP}
       - PORT_RABBITMQ=${PORT_RABBITMQ}
 
@@ -66,6 +64,7 @@ services:
   converter:
     build: converter/
     container_name: converter
+    restart: unless-stopped
     command: python main.py
     depends_on:
       - db
@@ -81,9 +80,6 @@ services:
       - ENDPOINT_MINIO=${ENDPOINT_MINIO}
       - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
-      - PORT_DB=${PORT_DB}
-      - PORT_MINIO=${PORT_MINIO}
-      - PORT_APP=${PORT_APP}
       - PORT_RABBITMQ=${PORT_RABBITMQ}
 
 volumes:
