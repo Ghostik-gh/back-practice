@@ -21,7 +21,6 @@ test = Table('test', meta,
 )
 
 dsn=settings.DSN_POSTGRE
-print(dsn)
 engine = create_engine(dsn, echo=True)
 meta.create_all(engine)
 

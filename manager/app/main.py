@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile
 import uvicorn
+from config import settings
 from s3_minio import get_url_to_file, remove_file, upload_file
 import uuid
 from postgre import add_file, change_status, get_status, get_filename

@@ -15,11 +15,8 @@ class Settings(BaseSettings):
     ENDPOINT_MINIO=os.getenv('ENDPOINT_MINIO')
     HOST_RABBITMQ=os.getenv('HOST_RABBITMQ')
     HOST=os.getenv('HOST')
-    PORT_DB=os.getenv('PORT_DB')
-    PORT_MINIO=os.getenv('PORT_MINIO')
     PORT_APP=os.getenv('PORT_APP')
     PORT_RABBITMQ=os.getenv('PORT_RABBITMQ')
-
 
     class Config:
         env_file = ".env"
