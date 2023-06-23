@@ -8,6 +8,7 @@ load_dotenv(find_dotenv())
 
 class Settings(BaseSettings):
 
+    POSTGRE_DSN = os.getenv('POSTGRE_DSN')
     DB_USER = os.getenv('DB_USER')
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     MINIO_ROOT_USER = os.getenv('MINIO_ROOT_USER')

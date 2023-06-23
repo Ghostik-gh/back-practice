@@ -20,7 +20,10 @@ test = Table('test', meta,
     Column('state', Integer, default=0),
 )
 
-engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.HOST}/db01", echo=True)
+# engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@127.0.0.1:{settings.PORT_DB}/db01", echo=True)
+dsn=f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@db:{settings.PORT_DB}/db01"
+print(dsn)
+engine = create_engine(dsn, echo=True)
 meta.create_all(engine)
 
 # try except ?

@@ -20,7 +20,8 @@ test = Table('test', meta,
     Column('state', Integer, default=0),
 )
 
-engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.HOST}/db01", echo=True)
+engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@db/db01", echo=True)
+# engine = create_engine(f"postgresql+psycopg2://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.HOST}/db01", echo=True)
 
 meta.create_all(engine)
 
@@ -37,9 +38,15 @@ def get_status(uuid:str) -> int:
         return res.fetchone()[-1]
 
 def change_status(uuid:str, state:int):
+    print('start changing')
     with engine.connect() as conn:
+        print('connection started')
         conn.execute(test.update().where(test.c.uuid == uuid).values(state=state))
+        print('before commit')
         conn.commit()
+        print('closing')
+        conn.close()
+    print("end connection from postgre")
 
 def get_exts(uuid:str) -> int:
     with engine.connect() as conn:

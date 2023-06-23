@@ -5,7 +5,8 @@ from config import settings
 def que_init():
     credentials = pika.PlainCredentials(settings.RABBITMQ_DEFAULT_USER, settings.RABBITMQ_DEFAULT_PASS)
 
-    parameters = pika.ConnectionParameters(host=settings.HOST,
+    parameters = pika.ConnectionParameters(host='rabbitmq',
+                                        #    host=settings.HOST,
                                         port=settings.PORT_RABBITMQ,
                                         virtual_host='/',
                                         credentials=credentials)
