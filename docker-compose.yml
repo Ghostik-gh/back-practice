@@ -81,6 +81,27 @@ services:
       - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
       - PORT_RABBITMQ=${PORT_RABBITMQ}
+  
+  converter2:
+    build: converter/
+    container_name: converter2
+    restart: unless-stopped
+    command: python main.py
+    depends_on:
+      - db
+      - rabbitmq
+      - minio
+      - manager
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - DSN_POSTGRE=${DSN_POSTGRE}
+      - ENDPOINT_MINIO=${ENDPOINT_MINIO}
+      - HOST_RABBITMQ=${HOST_RABBITMQ}
+      - HOST=${HOST}
+      - PORT_RABBITMQ=${PORT_RABBITMQ}
 
 volumes:
   myapp:
