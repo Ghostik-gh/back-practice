@@ -20,7 +20,7 @@ test = Table('test', meta,
     Column('state', Integer, default=0),
 )
 dsn = settings.DSN_POSTGRE
-engine = create_engine(dsn, echo=True)
+engine = create_engine(dsn)# , echo=True)
 
 meta.create_all(engine)
 

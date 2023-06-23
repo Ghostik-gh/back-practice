@@ -21,7 +21,7 @@ test = Table('test', meta,
 )
 
 dsn=settings.DSN_POSTGRE
-engine = create_engine(dsn, echo=True)
+engine = create_engine(dsn)# , echo=True)
 meta.create_all(engine)
 
 def add_file(uuid:str, filename:str, start_ext:str, end_ext:str):

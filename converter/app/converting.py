@@ -5,6 +5,7 @@ import io
 import ffmpeg 
 import subprocess
 from s3_minio import get_file, remove_file, upload_file
+import logging
 
 
 
@@ -23,9 +24,8 @@ channel.queue_declare(queue='hello')
 # Функция, которая будет вызвана каждый раз, когда приходит сообщение
 def callback(ch, method, properties, body):
     file_id = body.decode('utf-8')
-    print("Received %r" % file_id)
     exts = get_exts(file_id)
-    print(exts)
+    logging.info('Received', file_id)
     change_status(file_id, 2)
     try:
         input_data = get_file(file_id=file_id)
