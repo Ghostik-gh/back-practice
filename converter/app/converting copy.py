@@ -1,4 +1,3 @@
-import os
 import pika
 from config import settings
 from postgre import change_status, get_exts
@@ -26,23 +25,28 @@ channel.queue_declare(queue='hello')
 def callback(ch, method, properties, body):
     file_id = body.decode('utf-8')
     exts = get_exts(file_id)
-    print('Received', file_id)
+    logging.info('Received', file_id)
     change_status(file_id, 2)
     try:
         input_data = get_file(file_id=file_id)
-        filename=f'{file_id}.{exts[1]}'
-        out, err = (ffmpeg
-            .input('pipe:0', format=exts[0])
-            .output(filename, format=exts[1])
-            .run(input=input_data.read(), capture_stdout=True, capture_stderr=True)
+        args = (ffmpeg
+            .input('pipe:0') #, format=*exts[0])
+            .output('pipe:1', format='mov')#exts[1])
+            .get_args()
         )
-        with open(filename, 'rb') as f:
-            upload_file(file=f, file_id=file_id)
-        os.remove(filename)
+        print("=================================================")
+        print(args)
+        data = subprocess.run(['ffmpeg'] + args, input=input_data.read())
+        # data = p.communicate(input=input_data.read())
+        # print(data[1])
+        print("===========",data)
+        output_data = io.BytesIO(data)
+        upload_file(file=output_data, file_id=file_id)
         change_status(file_id, 3)
         print("Upload succesfully")
     except ffmpeg.Error as err:
-        print("converting error", err)
+        print("converting out", err.stdout)
+        print("converting error", err.stderr)
         change_status(file_id, 4)
     finally:
         remove_file(file_id=file_id, bucket="upbuck")
