@@ -18,8 +18,8 @@ services:
     container_name: minio
     volumes:
       - myapp:/data
-    # ports:
-    #   - ${PORT_MINIO}:${PORT_MINIO}
+    ports:
+      - ${PORT_MINIO}:${PORT_MINIO}
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
