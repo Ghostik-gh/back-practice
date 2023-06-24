@@ -1,5 +1,8 @@
 version: '3.7'
 
+volumes:
+  myapp:
+
 services:
   db:
     image: postgres:15.3
@@ -60,10 +63,9 @@ services:
       - PORT_APP=${PORT_APP}
       - PORT_RABBITMQ=${PORT_RABBITMQ}
 
-
   converter:
     build: converter/
-    container_name: converter
+    # container_name: converter
     restart: unless-stopped
     command: python main.py
     depends_on:
@@ -81,27 +83,7 @@ services:
       - HOST_RABBITMQ=${HOST_RABBITMQ}
       - HOST=${HOST}
       - PORT_RABBITMQ=${PORT_RABBITMQ}
+    deploy:
+      mode: replicated
+      replicas: 2
   
-  converter2:
-    build: converter/
-    container_name: converter2
-    restart: unless-stopped
-    command: python main.py
-    depends_on:
-      - db
-      - rabbitmq
-      - minio
-      - manager
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-      - DSN_POSTGRE=${DSN_POSTGRE}
-      - ENDPOINT_MINIO=${ENDPOINT_MINIO}
-      - HOST_RABBITMQ=${HOST_RABBITMQ}
-      - HOST=${HOST}
-      - PORT_RABBITMQ=${PORT_RABBITMQ}
-
-volumes:
-  myapp:
