@@ -18,7 +18,10 @@
 - minio/minio:latest
 - rabbitmq:3.12-management
 - manager/
-- converter/
+- converter-1/
+- converter-2/
+- prometheus
+- grafana
 
 Контейнеры manager и converter собираются локально
 
@@ -34,6 +37,10 @@ docker-compose --compatibility up --build -d
 
 Посмотреть простой веб интерфейс можно будет на адрессе http://127.0.0.1:8000/docs
 
+Пример обработки метрик собранных с помощью Prometheus и визуализированных в Grafana
+
+![Prometheus data](prometheus.png)
+
 # Stack
 
 В проекте используются такие библиотеки и технологии:
@@ -44,8 +51,9 @@ FastApi
 Pydantic
 SQLAlchemy
 RabbitMQ
-S3 -- MinIO -- boto3
+S3 (MinIO) boto3
 PostgreSQL
 docker-compose
 fffmpeg
+Prometheus + Grafana
 ```
