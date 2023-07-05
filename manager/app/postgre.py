@@ -1,5 +1,24 @@
 from config import settings
 from sqlalchemy import Table, MetaData, Column, Integer, String, create_engine
+# from sqlalchemy.ext.declarative import declarative_base
+
+
+# engine1 = create_engine(settings.DSN_POSTGRE, echo=True) 
+
+# Base = declarative_base()
+
+# class Task(Base):
+#     __tablename__ = 'Task'
+
+#     id = Column(Integer, primary_key=True)
+#     uuid = Column(String(36), nullable=False)
+#     filename = Column(String(250), nullable=False)
+#     start_ext = Column(String(30), nullable=False)
+#     end_ext = Column(String(30), nullable=False)
+#     state = Column(Integer, default=0)
+
+# Base.metadata.create_all()
+
 
 meta = MetaData()
 

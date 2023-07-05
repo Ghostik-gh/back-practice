@@ -4,8 +4,11 @@ from s3_minio import get_url_to_file, remove_file, upload_file
 from uuid import uuid4
 from postgre import add_file, change_status, get_status, get_filename
 from rabbit import send_msg
+from prometheus_fastapi_instrumentator import Instrumentator
+
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
 """
 Проверка состояния по uuid файла
