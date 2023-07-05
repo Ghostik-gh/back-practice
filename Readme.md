@@ -37,9 +37,12 @@ docker-compose --compatibility up --build -d
 
 Посмотреть простой веб интерфейс можно будет на адрессе http://127.0.0.1:8000/docs
 
-Пример обработки метрик собранных с помощью Prometheus и визуализированных в Grafana
+# Metrics
+
+## Вы можете получить метрики перейдя на http://localhost:3000/dashboards
 
 ![Prometheus data](prometheus.png)
+Пример обработки метрик собранных с помощью Prometheus и визуализированных в Grafana
 
 # Stack
 
