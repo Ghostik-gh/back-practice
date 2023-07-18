@@ -67,7 +67,7 @@ def download_file(file_id: str):
         url = get_url_to_file(file_id=file_id, filename=filename)
         if "minio" in url:
             url = url.replace("minio", "127.0.0.1")
-        return {'status' : 200, "url": url}
+        return {'status' : 200, "url": url, "delete": f"http://127.0.0.1:8000/remove/{file_id}"}
     elif status == 4:
         return {'status': 200, 'response': "Такого файла нет или он уже удален"}
     else:

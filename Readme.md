@@ -44,6 +44,18 @@ docker-compose --compatibility up --build -d
 ![Prometheus data](prometheus.png)
 Пример обработки метрик собранных с помощью Prometheus и визуализированных в Grafana
 
+# Architecture
+
+![Scheme Services](back-scheme-Services.jpg)
+
+# Tables
+
+![Table model](back-scheme-Table.jpg)
+
+# Processes
+
+![Processes](back-scheme-Model.jpg)
+
 # Stack
 
 В проекте используются такие библиотеки и технологии:
