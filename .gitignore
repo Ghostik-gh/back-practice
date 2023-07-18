@@ -1,5 +1,6 @@
 # Ignore Token & other private const
 constants.py
+grafana_data/grafana.db
 
 data/*
 tmp/*
